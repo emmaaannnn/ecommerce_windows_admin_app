@@ -7,7 +7,7 @@ enum ClothingType {
   accessories,
 }
 
-class InventoryItem {
+class Item {
   final String id;
   final String name;
   final String description;
@@ -26,7 +26,7 @@ class InventoryItem {
   final ClothingType clothingType;
 
 
-  InventoryItem({
+  Item({
     required this.id,
     required this.name,
     required this.description,
