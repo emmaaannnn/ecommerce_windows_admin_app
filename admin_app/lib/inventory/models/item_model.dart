@@ -19,7 +19,6 @@ class Item {
   final bool isOutOfStock;
   final bool isAvailable; // for hiding/unhiding item
   final bool isArchived;
-  final String location;
   final List<String> imageUrls;
   final DateTime lastUpdated;
   final String collection; // e.g., "Winter 2025", "Streetwear"
@@ -38,7 +37,6 @@ class Item {
     this.isOutOfStock = false,
     this.isAvailable = true,
     this.isArchived = false,
-    required this.location,
     required this.imageUrls,
     required this.lastUpdated,
     required this.collection,
