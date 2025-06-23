@@ -1,4 +1,4 @@
-import './home_screen/grid_screen/home_grid_screen.dart';
+import './home_screen/home_list_screen.dart';
 import 'package:flutter/material.dart';
 
 class InventorySection extends StatelessWidget {
@@ -18,7 +18,7 @@ class InventorySection extends StatelessWidget {
           //   page = InventoryDetailsPage(itemId: settings.arguments as String);
           //   break;
           default:
-            page = HomeGridScreen();
+            page = ;
         }
 
         return MaterialPageRoute(builder: (_) => page);
