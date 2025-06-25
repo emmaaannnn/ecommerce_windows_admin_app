@@ -18,7 +18,7 @@ class InventorySection extends StatelessWidget {
           //   page = InventoryDetailsPage(itemId: settings.arguments as String);
           //   break;
           default:
-            page = ;
+            page = HomeListScreen();
         }
 
         return MaterialPageRoute(builder: (_) => page);

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'item_list.dart';
+import 'package:admin_app/inventory/data/inventory_data.dart';
 
 class HomeListScreen extends StatelessWidget {
   const HomeListScreen({super.key});
@@ -9,12 +11,7 @@ class HomeListScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Inventory Dashboard'),
       ),
-      body: Center(
-        child: Text(
-          'Hello World THIS IS FOR LIST',
-          style: TextStyle(fontSize: 24),
-        ),
-      ),
+      body: ItemList(items: sampleItems),
     );
   }
 }
