@@ -1,18 +1,48 @@
 import 'package:flutter/material.dart';
 import '../../models/item_model.dart';
 
-class ItemCard extends StatelessWidget {
+class ItemCard extends StatefulWidget {
   final Item item;
+  final VoidCallback? onChanged;
 
-  const ItemCard({super.key, required this.item});
+  const ItemCard({
+    super.key,
+    required this.item,
+    this.onChanged,
+  });
+
+  @override
+  State<ItemCard> createState() => _ItemCardState();
+}
+
+class _ItemCardState extends State<ItemCard> {
+  late String availabilityStatus;
+
+  @override
+  void initState() {
+    super.initState();
+    // Set initial state
+    availabilityStatus = widget.item.isAvailable ? 'Available' : 'Hidden';
+  }
+
+  void handleAvailabilityChange(String? newValue) {
+    if (newValue == null || newValue == availabilityStatus) return;
+
+    setState(() {
+      availabilityStatus = newValue;
+      // Later you can also update the item’s internal state if needed
+    });
+
+    widget.onChanged?.call();
+  }
 
   int get totalQuantity =>
-      item.sizeQuantities.values.fold(0, (prev, qty) => prev + qty);
+      widget.item.sizeQuantities.values.fold(0, (prev, qty) => prev + qty);
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 120, // Fixed height
+      height: 120,
       child: Card(
         margin: const EdgeInsets.symmetric(vertical: 8),
         child: Padding(
@@ -26,14 +56,13 @@ class ItemCard extends StatelessWidget {
                 height: 80,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(item.imageUrls.first),
+                    image: NetworkImage(widget.item.imageUrls.first),
                     fit: BoxFit.cover,
                   ),
                   borderRadius: BorderRadius.circular(8),
                   color: Colors.grey[200],
                 ),
               ),
-
               const SizedBox(width: 12),
 
               // Title, Price, Quantity
@@ -44,14 +73,14 @@ class ItemCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      item.name,
+                      widget.item.name,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 6),
-                    Text('Price: \$${item.effectivePrice.toStringAsFixed(2)}'),
+                    Text('Price: \$${widget.item.effectivePrice.toStringAsFixed(2)}'),
                     Text('Qty: $totalQuantity'),
                   ],
                 ),
@@ -59,34 +88,55 @@ class ItemCard extends StatelessWidget {
 
               const SizedBox(width: 12),
 
-              // Availability - Center vertically
+              // Availability Dropdown
               Container(
-                width: 90, // Fixed width space
+                width: 100,
                 alignment: Alignment.center,
-                child: Text(
-                  item.isOutOfStock
-                      ? 'Out of Stock'
-                      : item.isAvailable
-                          ? 'Available'
-                          : 'Hidden',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: item.isOutOfStock ? Colors.red : Colors.green,
-                  ),
-                ),
+                child: widget.item.isOutOfStock
+                    ? Text(
+                        'Out of Stock',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: Colors.red,
+                        ),
+                      )
+                    : DropdownButton<String>(
+                        value: availabilityStatus,
+                        items: const [
+                          DropdownMenuItem(
+                            value: 'Available',
+                            child: Text(
+                              'Available',
+                              style: TextStyle(color: Colors.green),
+                            ),
+                          ),
+                          DropdownMenuItem(
+                            value: 'Hidden',
+                            child: Text(
+                              'Hidden',
+                              style: TextStyle(color: Colors.blue),
+                              ),
+                          ),
+                        ],
+                        onChanged: handleAvailabilityChange,
+                        underline: const SizedBox(),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                        ),
+                      ),
               ),
 
               const SizedBox(width: 12),
 
-              // Size/Quantity grid - Aligned right
+              // Size/Quantity Grid
               Expanded(
                 flex: 4,
                 child: Wrap(
                   alignment: WrapAlignment.end,
                   spacing: 8,
                   runSpacing: 4,
-                  children: item.sizeQuantities.entries.map((entry) {
+                  children: widget.item.sizeQuantities.entries.map((entry) {
                     return Chip(
                       label: Text('${entry.key}: ${entry.value}'),
                       backgroundColor: Colors.grey[100],

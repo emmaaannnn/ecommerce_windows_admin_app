@@ -35,6 +35,16 @@ class _HomeListScreenState extends State<HomeListScreen> {
     }
   }
 
+  void handleDiscardChanges() {
+  // Reset unsaved changes flag
+  setState(() {
+    hasUnsavedChanges = false;
+  });
+
+  // Optionally reset any item modifications too if you're tracking them
+  print("Changes discarded");
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,12 +56,13 @@ class _HomeListScreenState extends State<HomeListScreen> {
           HomeHeader(
             onAddPressed: handleAddProduct,
             onSavePressed: handleSaveChanges,
+            onDiscardPressed: handleDiscardChanges, // ✅ new
             showSaveButton: hasUnsavedChanges,
           ),
           Expanded(
             child: ItemList(
               items: sampleItems,
-              // onItemChanged: onItemChanged, // Optional future integration
+              onItemChanged: onItemChanged,
             ),
           ),
         ],
