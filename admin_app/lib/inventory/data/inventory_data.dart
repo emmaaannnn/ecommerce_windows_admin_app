@@ -17,9 +17,9 @@ final List<Item> sampleItems = [
   ),
   Item(
     id: 'item002',
-    name: 'Denim Jacket',
+    name: 'Defiance Heavyweight Hoodie',
     description: 'Faded blue denim jacket with button-up front.',
-    sizeQuantities: {'M': 3, 'L': 0},
+    sizeQuantities: {'S': 0, 'M': 3, 'L': 0, 'XL': 0, 'XXL': 1},
     price: 89.99,
     salePrice: 69.99,
     isOnSale: true,
@@ -30,7 +30,7 @@ final List<Item> sampleItems = [
       'https://example.com/images/denim-jacket-back.png'
     ],
     lastUpdated: DateTime.now().subtract(Duration(days: 2)),
-    collection: 'Autumn 2025',
+    collection: '',
     clothingType: ClothingType.jacket,
   ),
   Item(
@@ -45,7 +45,7 @@ final List<Item> sampleItems = [
     isArchived: false,
     imageUrls: ['https://example.com/images/black-cargos.png'],
     lastUpdated: DateTime.now().subtract(Duration(days: 5)),
-    collection: 'Urban Utility',
+    collection: '',
     clothingType: ClothingType.pants,
   ),
   Item(

@@ -1,7 +1,22 @@
 import 'package:flutter/material.dart';
 import 'inventory/screens/inventory_screen.dart';
+import 'package:window_manager/window_manager.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await windowManager.ensureInitialized();
+
+  WindowOptions windowOptions = const WindowOptions(
+    minimumSize: Size(1000, 600), // Set your min width and height here
+    center: true,
+  );
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.show();
+    await windowManager.focus();
+  });
+
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
