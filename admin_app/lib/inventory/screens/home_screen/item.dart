@@ -17,12 +17,14 @@ class ItemCard extends StatefulWidget {
 
 class _ItemCardState extends State<ItemCard> {
   late String availabilityStatus;
+  late Map<String, int> localQuantities;
 
   @override
   void initState() {
     super.initState();
     // Set initial state
     availabilityStatus = widget.item.isAvailable ? 'Available' : 'Hidden';
+    localQuantities = Map<String, int>.from(widget.item.sizeQuantities);
   }
 
   void handleAvailabilityChange(String? newValue) {
@@ -36,9 +38,16 @@ class _ItemCardState extends State<ItemCard> {
     widget.onChanged?.call();
   }
 
-  int get totalQuantity =>
-      widget.item.sizeQuantities.values.fold(0, (prev, qty) => prev + qty);
+  void updateQuantity(String size, int newQty) {
+    setState(() {
+      localQuantities[size] = newQty;
+    });
+    widget.onChanged?.call();
+  }
 
+  int get totalQuantity =>
+      localQuantities.values.fold(0, (prev, qty) => prev + qty);
+  
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -136,10 +145,68 @@ class _ItemCardState extends State<ItemCard> {
                   alignment: WrapAlignment.end,
                   spacing: 8,
                   runSpacing: 4,
-                  children: widget.item.sizeQuantities.entries.map((entry) {
-                    return Chip(
-                      label: Text('${entry.key}: ${entry.value}'),
-                      backgroundColor: Colors.grey[100],
+                  children: localQuantities.entries.map((entry) {
+                    final size = entry.key;
+                    final qty = entry.value;
+
+                    return Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // Size label
+                          Text('$size: '),
+
+                          // Quantity text field
+                          SizedBox(
+                            width: 28,
+                            child: TextField(
+                              controller: TextEditingController(text: qty.toString()),
+                              keyboardType: TextInputType.number,
+                              textAlign: TextAlign.center,
+                              onSubmitted: (value) {
+                                final newQty = int.tryParse(value);
+                                if (newQty != null && newQty >= 0) {
+                                  updateQuantity(size, newQty);
+                                }
+                              },
+                              decoration: const InputDecoration(
+                                isDense: true,
+                                contentPadding: EdgeInsets.symmetric(vertical: 4),
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(width: 4),
+
+                          // Vertical buttons
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.add, size: 16),
+                                onPressed: () => updateQuantity(size, qty + 1),
+                                constraints: const BoxConstraints(),
+                                padding: EdgeInsets.zero,
+                                visualDensity: VisualDensity.compact,
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.remove, size: 16),
+                                onPressed: qty > 0 ? () => updateQuantity(size, qty - 1) : null,
+                                constraints: const BoxConstraints(),
+                                padding: EdgeInsets.zero,
+                                visualDensity: VisualDensity.compact,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     );
                   }).toList(),
                 ),
